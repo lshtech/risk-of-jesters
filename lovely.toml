@@ -256,6 +256,7 @@ self.children.animatedSprite.atlas = G.ANIMATION_ATLAS[self.config.blind.atlas a
 match_indent = true
 overwrite = false
 
+# Implement modded Blinds
 [[patches]]
 [patches.pattern]
 target = "blind.lua"

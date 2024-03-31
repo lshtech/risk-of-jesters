@@ -66,7 +66,7 @@ function SMODS.INIT.RiskofJesters()
         end
     end
 
-    -- Manually inject Jokers instead of Steamodded to fix some bugs and provide better localization
+    -- Manually inject Jokers instead of Steamodded to provide better language support
     for k, v in pairs(jokers) do
         SMODS.Sprite:new(k, mod.path, k..".png", 71, 95, "asset_atli"):register()
 
@@ -164,6 +164,8 @@ function copy_card(other, new_card, card_scale, playing_card, strip_edition)
 
     if new.ability.bungus_rounds then
         new.ability.bungus_rounds = 0
+    elseif new.ability.enabled then
+        new.ability.enabled = false
     end
 
     return new
@@ -255,6 +257,7 @@ function Card:remove_from_deck(from_debuff)
 
 end
 
+-- Flag if the card is consumable and used to properly check Happiest Mask's ability
 local use_consumeable_ref = Card.use_consumeable
 function Card:use_consumeable(area, copier)
     if not self.debuff then
@@ -264,6 +267,7 @@ function Card:use_consumeable(area, copier)
     use_consumeable_ref(self, area, copier)
 end
 
+-- Same here
 local sell_card_ref = Card.sell_card
 function Card:sell_card()
     self.ability.sold = true
@@ -427,11 +431,6 @@ function Blind:drawn_to_hand()
     end
 
     drawn_to_hand_ref(self)
-end
-
-local defeat_ref = Blind.defeat
-function Blind:defeat(silent)
-    defeat_ref(self, silent)
 end
 
 local disable_ref = Blind.disable
