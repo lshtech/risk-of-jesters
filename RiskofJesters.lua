@@ -421,7 +421,7 @@ function Blind:drawn_to_hand()
                 self:wiggle()
             end
         elseif self.name == "Tyrian Crab" and self.prepped then
-            ease_required_chips(self.chips * 1.05)
+            ease_required_chips(self.chips * 1.5)
             self:wiggle()
         end
     end
@@ -432,10 +432,6 @@ end
 local defeat_ref = Blind.defeat
 function Blind:defeat(silent)
     defeat_ref(self, silent)
-
-    -- if self.name == "Tyrian Crab" then
-    --     ease_required_chips(get_blind_amount(G.GAME.round_resets.ante) * self.mult * G.GAME.starting_params.ante_scaling)
-    -- end
 end
 
 local disable_ref = Blind.disable
