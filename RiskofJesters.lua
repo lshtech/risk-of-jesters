@@ -8,7 +8,6 @@
 ------------MOD CODE -------------------------
 
 function SMODS.INIT.RiskofJesters()
-    _RELEASE_MODE = false
     local mod = SMODS.findModByID("RiskofJesters")
     local jokers = love.filesystem.load(mod.path.."jokers.lua")()
     local vouchers = love.filesystem.load(mod.path.."vouchers.lua")()
