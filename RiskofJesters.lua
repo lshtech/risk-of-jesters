@@ -3,6 +3,8 @@
 --- MOD_ID: RiskofJesters
 --- MOD_AUTHOR: [DVRP]
 --- MOD_DESCRIPTION: Risk of Rain themed content pack
+--- DISPLAY_NAME: RoJ
+--- BADGE_COLOUR: 6d60ab
 
 ----------------------------------------------
 ------------MOD CODE -------------------------
@@ -31,72 +33,85 @@ function SMODS.INIT.RiskofJesters()
     end
 
     local function inject_jokers()
-        local order = table_length(G.P_CENTER_POOLS.Joker)
-
         for k, v in pairs(jokers) do
-            v.order = v.order + order
-
-            G.P_CENTERS[k] = v
-            table.insert(G.P_CENTER_POOLS.Joker, v)
-            table.insert(G.P_JOKER_RARITY_POOLS[v.rarity], v)
+            if not G.P_CENTERS[k] and not G.P_CENTER_POOLS.Joker[k] then
+                G.P_CENTERS[k] = v
+                table.insert(G.P_CENTER_POOLS.Joker, v)
+                table.insert(G.P_JOKER_RARITY_POOLS[v.rarity], v)
+            end
         end
 
         table.sort(G.P_CENTER_POOLS.Joker, function (a, b) return a.order < b.order end)
     end
 
     local function inject_vouchers()
-        local order = table_length(G.P_CENTER_POOLS.Voucher)
-
         for k, v in pairs(vouchers) do
-            v.order = v.order + order
-
-            G.P_CENTERS[k] = v
-            table.insert(G.P_CENTER_POOLS.Voucher, v)
+            if not G.P_CENTERS[k] and not G.P_CENTER_POOLS.Voucher[k] then
+                G.P_CENTERS[k] = v
+                table.insert(G.P_CENTER_POOLS.Voucher, v)
+            end
         end
+
+        table.sort(G.P_CENTER_POOLS.Voucher, function (a, b) return a.order < b.order end)
     end
 
     local function inject_blinds()
-        local order = table_length(G.P_BLINDS)
-
         for k, v in pairs(blinds) do
-            v.order = v.order + order
-
-            G.P_BLINDS[k] = v
+            if not G.P_BLINDS[k] then
+                G.P_BLINDS[k] = v
+            end
         end
     end
+
+    local length = table_length(G.P_CENTER_POOLS.Joker)
+    local order = G.P_CENTER_POOLS.Joker[length].order
 
     -- Manually inject Jokers instead of Steamodded to provide better language support
     for k, v in pairs(jokers) do
         SMODS.Sprite:new(k, mod.path, k..".png", 71, 95, "asset_atli"):register()
 
         v.key = k
+        v.order = v.order + order
         v.config = v.config or {}
         v.cost_mult = 1.0
         v.set = "Joker"
         v.pos = {x = 0, y = 0}
         v.atlas = k
+        v.mod_name = SMODS._MOD_NAME
+        v.badge_colour = SMODS._BADGE_COLOUR
     end
+
+    length = table_length(G.P_CENTER_POOLS.Voucher)
+    order = G.P_CENTER_POOLS.Voucher[length].order
 
     for k, v in pairs(vouchers) do
         SMODS.Sprite:new(k, mod.path, k..".png", 71, 95, "asset_atli"):register()
 
         v.key = k
+        v.order = v.order + order
         v.config = v.config or {}
         v.available = true
         v.set = "Voucher"
         v.pos = {x = 0, y = 0}
         v.atlas = k
+        v.mod_name = SMODS._MOD_NAME
+        v.badge_colour = SMODS._BADGE_COLOUR
     end
+
+    order = table_length(G.P_BLINDS)
 
     for k, v in pairs(blinds) do
         SMODS.Sprite:new(k, mod.path, k..".png", 34, 34, "animation_atli", 21):register()
 
         v.key = k
+        v.order = v.order + order
         v.defeated = false
         v.vars = v.vars or {}
         v.debuff = v.debuff or {}
         v.pos = {x = 0, y = 0}
         v.atlas = k
+        v.mod_name = SMODS._MOD_NAME
+        v.badge_colour = SMODS._BADGE_COLOUR
     end
 
     inject_jokers()
