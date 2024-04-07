@@ -39,6 +39,10 @@ function SMODS.INIT.RiskofJesters()
                 table.insert(G.P_CENTER_POOLS.Joker, v)
                 table.insert(G.P_JOKER_RARITY_POOLS[v.rarity], v)
             end
+
+            if not SMODS.Jokers[k] then
+                SMODS.Jokers[k] = v
+            end
         end
 
         table.sort(G.P_CENTER_POOLS.Joker, function (a, b) return a.order < b.order end)
@@ -114,48 +118,19 @@ function SMODS.INIT.RiskofJesters()
         v.badge_colour = SMODS._BADGE_COLOUR
     end
 
+    apply_localization()
     inject_jokers()
     inject_vouchers()
     inject_blinds()
 
-    local main_menu_ref = Game.main_menu
-    function Game:main_menu()
+    local init_item_prototypes_ref = Game.init_item_prototypes
+    function Game:init_item_prototypes()
+        init_item_prototypes_ref(self)
+
         apply_localization()
-
-        for k, v in pairs(jokers) do
-            if not SMODS.Jokers[k] then
-                SMODS.Jokers[k] = v
-            end
-        end
-
-        main_menu_ref(self)
-    end
-
-    local change_lang_ref = G.FUNCS.change_lang
-    function G.FUNCS.change_lang(e)
-        local lang = e.config.ref_table
-        local reinject = lang and lang ~= G.LANG
-
-        change_lang_ref(e)
-
-        -- Injected contents are removed when language is changed, so reinject them
-        if reinject then
-            G.E_MANAGER:add_event(Event({
-                trigger = "after",
-                delay = 0.3,
-                no_delete = true,
-                blockable = true,
-                blocking = false,
-                func = function()
-                    apply_localization()
-                    inject_jokers()
-                    inject_vouchers()
-                    inject_blinds()
-
-                    return true
-                end
-            }))
-        end
+        inject_jokers()
+        inject_vouchers()
+        inject_blinds()
     end
 end
 
