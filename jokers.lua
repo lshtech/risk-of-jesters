@@ -315,7 +315,7 @@ end
 
 return {
     j_egocentrism = {
-        order = 8,
+        order = 9,
         name = "Egocentrism",
         config = {
             extra = 40
@@ -329,7 +329,7 @@ return {
         calculate = calculate_egocentrism
     },
     j_eulogy = {
-        order = 9,
+        order = 10,
         name = "Eulogy Zero",
         config = {
             extra = 4
