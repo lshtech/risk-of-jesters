@@ -2,7 +2,7 @@
 --- MOD_NAME: Risk of Jesters
 --- MOD_ID: RiskofJesters
 --- MOD_AUTHOR: [DVRP]
---- MOD_DESCRIPTION: Risk of Rain themed content pack
+--- MOD_DESCRIPTION: New Jokers, Vouchers, and Blinds themed with the Risk of Rain franchise make their entrance, yet still retaining the feeling of vanilla Balatro
 --- DISPLAY_NAME: RoJ
 --- BADGE_COLOUR: 6d60ab
 
@@ -16,7 +16,7 @@ function SMODS.INIT.RiskofJesters()
     local blinds = love.filesystem.load(mod.path.."blinds.lua")()
 
     local function apply_localization()
-        local loc_en, loc_ko = love.filesystem.load(mod.path.."localizations.lua")()
+        local loc_en, loc_ko, loc_ru = love.filesystem.load(mod.path.."localizations.lua")()
 
         local function apply(target, source)
             for k, v in pairs(source) do
@@ -28,7 +28,7 @@ function SMODS.INIT.RiskofJesters()
             end
         end
 
-        apply(G.localization, G.LANG.key == "ko" and loc_ko or loc_en)
+        apply(G.localization, G.LANG.key == "ko" and loc_ko or G.LANG.key == "ru" and loc_ru or loc_en)
         init_localization()
     end
 
