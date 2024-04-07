@@ -332,7 +332,7 @@ return {
         order = 10,
         name = "Eulogy Zero",
         config = {
-            extra = 4
+            extra = 2
         },
         rarity = 2,
         cost = 5,
