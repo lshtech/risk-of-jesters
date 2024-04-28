@@ -1,5 +1,6 @@
-return {
-    bl_loop = {
+local blinds = {
+    {
+        slug = "loop",
         order = 1,
         name = "The Loop",
         dollars = 5,
@@ -9,10 +10,11 @@ return {
             max = 10
         },
         boss_colour = HEX("aadeed"),
-        discovered = true,
+        discovered = false,
         alerted = true
     },
-    bl_void = {
+    {
+        slug = "void",
         order = 2,
         name = "The Void",
         dollars = 5,
@@ -22,10 +24,11 @@ return {
             max = 10
         },
         boss_colour = HEX("9e52b7"),
-        discovered = true,
+        discovered = false,
         alerted = true
     },
-    bl_final_hammer = {
+    {
+        slug = "final_hammer",
         order = 3,
         name = "Glaucous Hammer",
         dollars = 8,
@@ -39,10 +42,11 @@ return {
             max = 10
         },
         boss_colour = HEX("6082b6"),
-        discovered = true,
+        discovered = false,
         alerted = true
     },
-    bl_final_crab = {
+    {
+        slug = "final_crab",
         order = 4,
         name = "Tyrian Crab",
         dollars = 8,
@@ -56,7 +60,11 @@ return {
             max = 10
         },
         boss_colour = HEX("cb75e3"),
-        discovered = true,
+        discovered = false,
         alerted = true
     }
 }
+
+table.sort(blinds, function (a, b) return a.order < b.order end)
+
+return blinds

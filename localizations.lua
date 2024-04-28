@@ -105,6 +105,16 @@ return {
                     "when any card is destroyed",
                     "{C:inactive}(Must have room)"
                 }
+            },
+            j_executive_card = {
+                name = "Executive Card",
+                text = {
+                    "After opening",
+                    "{C:attention}#1# Booster Packs{},",
+                    "can choose all cards",
+                    "from next one",
+                    "{C:inactive}#2#"
+                }
             }
         },
         Blind = {
@@ -286,6 +296,16 @@ return {
                     "{C:green}#1#/#2#{} 확률로",
                     "{C:spectral}유령{} 카드를 생성합니다",
                     "{C:inactive}(공간이 있어야 합니다)"
+                }
+            },
+            j_executive_card = {
+                name = "중역 카드",
+                text = {
+                    "After opening",
+                    "{C:attention}#1# Booster Packs{},",
+                    "can choose all cards",
+                    "from next one",
+                    "{C:inactive}#2#"
                 }
             }
         },

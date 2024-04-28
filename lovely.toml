@@ -48,6 +48,13 @@ end
 if G.GAME.used_vouchers.v_militech_printer then
     G.GAME.pack_choices = G.GAME.pack_choices + 1
 end
+
+for _, v in ipairs(G.jokers.cards) do
+    if v.ability.name == "Executive Card" and v.ability.executive_remaining == 0 then
+        G.GAME.pack_choices = G.GAME.pack_size
+        break
+    end
+end
 '''
 match_indent = true
 overwrite = false
@@ -95,6 +102,12 @@ elseif self.ability.name == "Happiest Mask" then
     loc_vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), self.ability.extra}
 elseif self.ability.name == "Encrusted Key" then
     loc_vars = {localize{type = "name_text", set = "Tag", key = "tag_coupon", nodes = {}}}
+elseif self.ability.name == "Executive Card" then
+    loc_vars = {self.ability.extra, localize{
+        type = "variable",
+        key = self.ability.executive_remaining == 0 and "loyalty_active" or "loyalty_inactive",
+        vars = {self.ability.executive_remaining}
+    }}
 '''
 match_indent = true
 overwrite = false

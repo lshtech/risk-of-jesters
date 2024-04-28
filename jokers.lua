@@ -313,8 +313,30 @@ local function calculate_kjaro(self, context)
     end
 end
 
-return {
-    j_egocentrism = {
+local function calculate_executive_card(self, context)
+    if context.open_booster and not context.blueprint then -- this context is called after the booster pack is all set up
+        self.ability.executive_remaining = self.ability.executive_remaining - 1
+
+        if self.ability.executive_remaining == 0 then -- prepared
+            juice_card_until(self, function(card) return card.ability.executive_remaining == 0 end, true)
+            card_eval_status_text(self, "extra", nil, nil, nil, {
+                message = localize("k_active_ex"),
+                colour = G.C.FILTER
+            })
+        elseif self.ability.executive_remaining < 0 then -- used
+            self.ability.executive_remaining = self.ability.extra
+        else
+            card_eval_status_text(self, "extra", nil, nil, nil, {
+                message = self.ability.executive_remaining.."/"..self.ability.extra,
+                colour = G.C.FILTER
+            })
+        end
+    end
+end
+
+local jokers = {
+    {
+        slug = "egocentrism",
         order = 9,
         name = "Egocentrism",
         config = {
@@ -323,12 +345,13 @@ return {
         rarity = 1,
         cost = 4,
         unlocked = true,
-        discovered = true,
+        discovered = false,
         blueprint_compat = true,
         eternal_compat = true,
         calculate = calculate_egocentrism
     },
-    j_eulogy = {
+    {
+        slug = "eulogy",
         order = 10,
         name = "Eulogy Zero",
         config = {
@@ -337,12 +360,13 @@ return {
         rarity = 2,
         cost = 5,
         unlocked = true,
-        discovered = true,
+        discovered = false,
         blueprint_compat = false,
         eternal_compat = true,
         calculate = nil
     },
-    j_bungus = {
+    {
+        slug = "bungus",
         order = 1,
         name = "Bustling Fungus",
         config = {
@@ -351,12 +375,13 @@ return {
         rarity = 1,
         cost = 6,
         unlocked = true,
-        discovered = true,
+        discovered = false,
         blueprint_compat = false,
         eternal_compat = true,
         calculate = calculate_bungus
     },
-    j_snake_eyes = {
+    {
+        slug = "snake_eyes",
         order = 2,
         name = "Snake Eyes",
         config = {
@@ -368,12 +393,13 @@ return {
         rarity = 1,
         cost = 5,
         unlocked = true,
-        discovered = true,
+        discovered = false,
         blueprint_compat = true,
         eternal_compat = true,
         calculate = calculate_snake_eyes
     },
-    j_daisy = {
+    {
+        slug = "daisy",
         order = 3,
         name = "Lepton Daisy",
         config = {
@@ -382,12 +408,13 @@ return {
         rarity = 2,
         cost = 6,
         unlocked = true,
-        discovered = true,
+        discovered = false,
         blueprint_compat = true,
         eternal_compat = true,
         calculate = calculate_daisy
     },
-    j_kjaro = {
+    {
+        slug = "kjaro",
         order = 4,
         name = "Kjaro's Band",
         config = {
@@ -399,23 +426,25 @@ return {
         rarity = 2,
         cost = 5,
         unlocked = true,
-        discovered = true,
+        discovered = false,
         blueprint_compat = true,
         eternal_compat = true,
         calculate = calculate_kjaro
     },
-    j_duplicator = {
+    {
+        slug = "duplicator",
         order = 5,
         name = "Substandard Duplicator",
         rarity = 3,
         cost = 10,
         unlocked = true,
-        discovered = true,
+        discovered = false,
         blueprint_compat = true,
         eternal_compat = true,
         calculate = calculate_duplicator
     },
-    j_happiest_mask = {
+    {
+        slug = "happiest_mask",
         order = 6,
         name = "Happiest Mask",
         config = {
@@ -424,31 +453,52 @@ return {
         rarity = 3,
         cost = 9,
         unlocked = true,
-        discovered = true,
+        discovered = false,
         blueprint_compat = true,
         eternal_compat = true,
         calculate = calculate_happiest_mask
     },
-    j_benthic = {
+    {
+        slug = "benthic",
         order = 7,
         name = "Benthic Bloom",
         rarity = 3,
         cost = 8,
         unlocked = true,
-        discovered = true,
+        discovered = false,
         blueprint_compat = true,
         eternal_compat = true,
         calculate = calculate_benthic
     },
-    j_encrusted = {
+    {
+        slug = "encrusted",
         order = 8,
         name = "Encrusted Key",
         rarity = 1,
         cost = 5,
         unlocked = true,
-        discovered = true,
+        discovered = false,
         blueprint_compat = true,
         eternal_compat = false,
         calculate = calculate_encrusted
+    },
+    {
+        slug = "executive_card",
+        order = 11,
+        name = "Executive Card",
+        config = {
+            extra = 6
+        },
+        rarity = 2,
+        cost = 6,
+        unlocked = true,
+        discovered = false,
+        blueprint_compat = false,
+        eternal_compat = true,
+        calculate = calculate_executive_card
     }
 }
+
+table.sort(jokers, function (a, b) return a.order < b.order end)
+
+return jokers

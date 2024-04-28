@@ -9,6 +9,8 @@
 ----------------------------------------------
 ------------MOD CODE -------------------------
 
+ROJ_LANG = {}
+
 function SMODS.INIT.RiskofJesters()
     local mod = SMODS.findModByID("RiskofJesters")
     local jokers = love.filesystem.load(mod.path.."jokers.lua")()
@@ -16,8 +18,6 @@ function SMODS.INIT.RiskofJesters()
     local blinds = love.filesystem.load(mod.path.."blinds.lua")()
 
     local function apply_localization()
-        local loc_en, loc_ko, loc_ru = love.filesystem.load(mod.path.."localizations.lua")()
-
         local function apply(target, source)
             for k, v in pairs(source) do
                 if type(target[k]) == "table" then
@@ -28,100 +28,54 @@ function SMODS.INIT.RiskofJesters()
             end
         end
 
-        apply(G.localization, G.LANG.key == "ko" and loc_ko or G.LANG.key == "ru" and loc_ru or loc_en)
+        local loc_en, loc_ko, loc_ru = love.filesystem.load(mod.path.."localizations.lua")()
+        ROJ_LANG = G.LANG.key == "ko" and loc_ko or G.LANG.key == "ru" and loc_ru or loc_en
+
+        apply(G.localization, ROJ_LANG)
         init_localization()
     end
 
     local function inject_jokers()
-        for k, v in pairs(jokers) do
-            if not G.P_CENTERS[k] and not G.P_CENTER_POOLS.Joker[k] then
-                G.P_CENTERS[k] = v
-                table.insert(G.P_CENTER_POOLS.Joker, v)
-                table.insert(G.P_JOKER_RARITY_POOLS[v.rarity], v)
-            end
+        for _, v in ipairs(jokers) do
+            local slug = "j_"..v.slug
 
-            if not SMODS.Jokers[k] then
-                SMODS.Jokers[k] = v
-            end
+            SMODS.Sprite:new(slug, mod.path, slug..".png", 71, 95, "asset_atli"):register()
+            SMODS.Joker:new(v.name, v.slug, v.config, v.pos, ROJ_LANG.descriptions.Joker[slug], v.rarity, v.cost,
+                v.unlocked, v.discovered, v.blueprint_compat, v.eternal_compat, v.effect, slug, v.soul_pos):register()
+
+            SMODS.Jokers[slug].calculate = v.calculate
         end
 
-        table.sort(G.P_CENTER_POOLS.Joker, function (a, b) return a.order < b.order end)
     end
 
     local function inject_vouchers()
-        for k, v in pairs(vouchers) do
-            if not G.P_CENTERS[k] and not G.P_CENTER_POOLS.Voucher[k] then
-                G.P_CENTERS[k] = v
-                table.insert(G.P_CENTER_POOLS.Voucher, v)
-            end
-        end
+        for _, v in ipairs(vouchers) do
+            local slug = "v_"..v.slug
 
-        table.sort(G.P_CENTER_POOLS.Voucher, function (a, b) return a.order < b.order end)
+            SMODS.Sprite:new(slug, mod.path, slug..".png", 71, 95, "asset_atli"):register()
+            SMODS.Voucher:new(v.name, v.slug, v.config, v.pos, ROJ_LANG.descriptions.Voucher[slug], v.cost,
+                v.unlocked, v.discovered, true, v.requires, slug):register()
+
+            SMODS.Vouchers[slug].redeem = v.redeem
+        end
     end
 
     local function inject_blinds()
-        for k, v in pairs(blinds) do
-            if not G.P_BLINDS[k] then
-                G.P_BLINDS[k] = v
-            end
+        for _, v in ipairs(blinds) do
+            local slug = "bl_"..v.slug
+
+            SMODS.Sprite:new(slug, mod.path, slug..".png", 34, 34, "animation_atli", 21):register()
+            SMODS.Blind:new(v.name, v.slug, ROJ_LANG.descriptions.Blind[slug], v.dollars, v.mult, v.vars, v.debuff,
+                v.pos, v.boss, v.boss_colour, v.discovered, slug):register()
         end
-    end
-
-    local length = table_length(G.P_CENTER_POOLS.Joker)
-    local order = G.P_CENTER_POOLS.Joker[length].order
-
-    -- Manually inject Jokers instead of Steamodded to provide better language support
-    for k, v in pairs(jokers) do
-        SMODS.Sprite:new(k, mod.path, k..".png", 71, 95, "asset_atli"):register()
-
-        v.key = k
-        v.order = v.order + order
-        v.config = v.config or {}
-        v.cost_mult = 1.0
-        v.set = "Joker"
-        v.pos = {x = 0, y = 0}
-        v.atlas = k
-        v.mod_name = SMODS._MOD_NAME
-        v.badge_colour = SMODS._BADGE_COLOUR
-    end
-
-    length = table_length(G.P_CENTER_POOLS.Voucher)
-    order = G.P_CENTER_POOLS.Voucher[length].order
-
-    for k, v in pairs(vouchers) do
-        SMODS.Sprite:new(k, mod.path, k..".png", 71, 95, "asset_atli"):register()
-
-        v.key = k
-        v.order = v.order + order
-        v.config = v.config or {}
-        v.available = true
-        v.set = "Voucher"
-        v.pos = {x = 0, y = 0}
-        v.atlas = k
-        v.mod_name = SMODS._MOD_NAME
-        v.badge_colour = SMODS._BADGE_COLOUR
-    end
-
-    order = table_length(G.P_BLINDS)
-
-    for k, v in pairs(blinds) do
-        SMODS.Sprite:new(k, mod.path, k..".png", 34, 34, "animation_atli", 21):register()
-
-        v.key = k
-        v.order = v.order + order
-        v.defeated = false
-        v.vars = v.vars or {}
-        v.debuff = v.debuff or {}
-        v.pos = {x = 0, y = 0}
-        v.atlas = k
-        v.mod_name = SMODS._MOD_NAME
-        v.badge_colour = SMODS._BADGE_COLOUR
     end
 
     apply_localization()
     inject_jokers()
     inject_vouchers()
     inject_blinds()
+
+    SMODS.SAVE_UNLOCKS()
 
     local init_item_prototypes_ref = Game.init_item_prototypes
     function Game:init_item_prototypes()
@@ -131,6 +85,8 @@ function SMODS.INIT.RiskofJesters()
         inject_jokers()
         inject_vouchers()
         inject_blinds()
+
+        SMODS.SAVE_UNLOCKS()
     end
 end
 
@@ -155,6 +111,8 @@ function copy_card(other, new_card, card_scale, playing_card, strip_edition)
         new.ability.bungus_rounds = 0
     elseif new.ability.enabled then
         new.ability.enabled = false
+    elseif new.ability.executive_remaining then
+        new.ability.executive_remaining = new.ability.extra
     end
 
     return new
@@ -272,6 +230,8 @@ function Card:set_ability(center, initial, delay_sprites)
         self.ability.bungus_rounds = 0
     elseif self.ability.name == "Kjaro's Band" then
         self.ability.enabled = false
+    elseif self.ability.name == "Executive Card" then
+        self.ability.executive_remaining = self.ability.extra
     end
 end
 
