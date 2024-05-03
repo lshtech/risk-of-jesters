@@ -3,6 +3,17 @@ version = "1.0.0"
 dump_lua = true
 priority = 0
 
+[[patches]]
+[patches.pattern]
+target = "main.lua"
+pattern = '''not c.ending_shop and not c.reroll_shop and not c.selling_card and not c.selling_self and not c.buying_card and'''
+position = "after"
+payload = '''
+not c.any_card_destroyed and not c.wheel_failed and not c.joker_added and
+'''
+match_indent = true
+overwrite = false
+
 # Update Booster Packs' descriptions when modded Vouchers are redeemed
 [[patches]]
 [patches.pattern]
