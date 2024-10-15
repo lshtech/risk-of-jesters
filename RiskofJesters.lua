@@ -5,6 +5,7 @@
 --- MOD_DESCRIPTION: New Jokers, Vouchers, and Blinds themed with the Risk of Rain franchise make their entrance, yet still retaining the feeling of vanilla Balatro
 --- DISPLAY_NAME: RoJ
 --- BADGE_COLOUR: 6d60ab
+--- PRIORITY: -100
 
 ----------------------------------------------
 ------------MOD CODE -------------------------
@@ -13,9 +14,9 @@ ROJ_LANG = {}
 
 function SMODS.INIT.RiskofJesters()
     local mod = SMODS.findModByID("RiskofJesters")
-    local jokers = love.filesystem.load(mod.path.."jokers.lua")()
-    local vouchers = love.filesystem.load(mod.path.."vouchers.lua")()
-    local blinds = love.filesystem.load(mod.path.."blinds.lua")()
+    local jokers = love.filesystem.load("Mods/RiskofJesters - ║╣╗τ║╗/".."jokers.lua")()
+    local vouchers = love.filesystem.load("Mods/RiskofJesters - ║╣╗τ║╗/".."vouchers.lua")()
+    local blinds = love.filesystem.load("Mods/RiskofJesters - ║╣╗τ║╗/".."blinds.lua")()
 
     local function apply_localization()
         local function apply(target, source)
@@ -28,7 +29,7 @@ function SMODS.INIT.RiskofJesters()
             end
         end
 
-        local loc_en, loc_ko, loc_ru = love.filesystem.load(mod.path.."localizations.lua")()
+        local loc_en, loc_ko, loc_ru = love.filesystem.load("Mods/RiskofJesters - ║╣╗τ║╗/".."localizations.lua")()
         ROJ_LANG = G.LANG.key == "ko" and loc_ko or G.LANG.key == "ru" and loc_ru or loc_en
 
         apply(G.localization, ROJ_LANG)
@@ -39,9 +40,15 @@ function SMODS.INIT.RiskofJesters()
         for _, v in ipairs(jokers) do
             local slug = "j_"..v.slug
 
-            SMODS.Sprite:new(slug, mod.path, slug..".png", 71, 95, "asset_atli"):register()
-            SMODS.Joker:new(v.name, v.slug, v.config, v.pos, ROJ_LANG.descriptions.Joker[slug], v.rarity, v.cost,
-                v.unlocked, v.discovered, v.blueprint_compat, v.eternal_compat, v.effect, slug, v.soul_pos):register()
+            local sprite = SMODS.Sprite:new(slug, "Mods/RiskofJesters - ║╣╗τ║╗/", slug..".png", 71, 95, "asset_atli")
+            if sprite then
+                sprite:register()
+            end
+            local joker = SMODS.Joker:new(v.name, v.slug, v.config, v.pos, ROJ_LANG.descriptions.Joker[slug], v.rarity, v.cost,
+                v.unlocked, v.discovered, v.blueprint_compat, v.eternal_compat, v.effect, slug, v.soul_pos)
+            if joker then
+                joker:register()
+            end
 
             SMODS.Jokers[slug].calculate = v.calculate
         end
@@ -52,9 +59,15 @@ function SMODS.INIT.RiskofJesters()
         for _, v in ipairs(vouchers) do
             local slug = "v_"..v.slug
 
-            SMODS.Sprite:new(slug, mod.path, slug..".png", 71, 95, "asset_atli"):register()
-            SMODS.Voucher:new(v.name, v.slug, v.config, v.pos, ROJ_LANG.descriptions.Voucher[slug], v.cost,
-                v.unlocked, v.discovered, true, v.requires, slug):register()
+            local sprite = SMODS.Sprite:new(slug, "Mods/RiskofJesters - ║╣╗τ║╗/", slug..".png", 71, 95, "asset_atli")
+            if sprite then
+                sprite:register()
+            end
+            local voucher = SMODS.Voucher:new(v.name, v.slug, v.config, v.pos, ROJ_LANG.descriptions.Voucher[slug], v.cost,
+                v.unlocked, v.discovered, true, v.requires, slug)
+            if voucher then
+                voucher:register()
+            end
 
             SMODS.Vouchers[slug].redeem = v.redeem
         end
@@ -64,9 +77,15 @@ function SMODS.INIT.RiskofJesters()
         for _, v in ipairs(blinds) do
             local slug = "bl_"..v.slug
 
-            SMODS.Sprite:new(slug, mod.path, slug..".png", 34, 34, "animation_atli", 21):register()
-            SMODS.Blind:new(v.name, v.slug, ROJ_LANG.descriptions.Blind[slug], v.dollars, v.mult, v.vars, v.debuff,
-                v.pos, v.boss, v.boss_colour, v.discovered, slug):register()
+            local sprite = SMODS.Sprite:new(slug, "Mods/RiskofJesters - ║╣╗τ║╗/", slug..".png", 34, 34, "animation_atli", 21)
+            if sprite then
+                sprite:register()
+            end
+            local blind = SMODS.Blind:new(v.name, v.slug, ROJ_LANG.descriptions.Blind[slug], v.dollars, v.mult, v.vars, v.debuff,
+                v.pos, v.boss, v.boss_colour, v.discovered, slug)
+            if blind then
+                blind:register()
+            end
         end
     end
 

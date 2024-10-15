@@ -1,3 +1,9 @@
+local function printer_redeem(center_table)
+    if center_table.name == "3D Printer" or center_table.name == "Mili-Tech Printer" then
+        G.GAME.pack_choices = G.GAME.pack_choices + 1
+    end
+end
+
 local vouchers = {
     {
         slug = "3d_printer",
@@ -9,6 +15,7 @@ local vouchers = {
         cost = 10,
         unlocked = true,
         discovered = false,
+        redeem = printer_redeem
     },
     {
         slug = "militech_printer",
@@ -22,7 +29,8 @@ local vouchers = {
         },
         cost = 10,
         unlocked = true,
-        discovered = false
+        discovered = false,
+        redeem = printer_redeem
     }
 }
 
