@@ -13,6 +13,8 @@
 
 ROJ_LANG = {}
 
+local loc_en, loc_ko, loc_ru = SMODS.load_file("localizations.lua")()
+
 function SMODS.INIT.RiskofJesters()
     local mod = SMODS.findModByID("RiskofJesters")
     local jokers = SMODS.load_file("jokers.lua")()
@@ -34,7 +36,6 @@ function SMODS.INIT.RiskofJesters()
         end
 
         --local loc_en, loc_ko, loc_ru = love.filesystem.load("Mods/RiskofJesters - ║╣╗τ║╗/".."localizations.lua")()
-        local loc_en, loc_ko, loc_ru = SMODS.load_file("localizations.lua")()
         ROJ_LANG = G.LANG.key == "ko" and loc_ko or G.LANG.key == "ru" and loc_ru or loc_en
 
         --apply(G.localization, ROJ_LANG)
