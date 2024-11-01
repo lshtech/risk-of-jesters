@@ -756,7 +756,7 @@ local attention_text_ref = attention_text
 function attention_text(args)
     attention_text_ref(args)
 
-    if args.text and args.text == localize("k_nope_ex") and args.major and args.major.ability.name == 'The Wheel of Fortune' then
+    if args.text and args.text == localize("k_nope_ex") and args.major and args.major.ability and args.major.ability.name == 'The Wheel of Fortune' then
         for _, v in ipairs(G.jokers.cards) do
             v:calculate_joker({
                 wheel_failed = true
